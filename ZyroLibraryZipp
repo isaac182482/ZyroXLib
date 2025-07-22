@@ -1,51 +1,67 @@
 local ZyroX = {}
 
 function ZyroX:Create(title)
-	local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-	ScreenGui.Name = "ZyroX_UI"
+	local gui = Instance.new("ScreenGui", game.CoreGui)
+	gui.Name = "ZyroX_UI"
 
-	local Main = Instance.new("Frame")
-	Main.Size = UDim2.new(0, 300, 0, 400)
-	Main.Position = UDim2.new(0.5, -150, 0.5, -200)
-	Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-	Main.BorderSizePixel = 0
-	Main.Parent = ScreenGui
+	local main = Instance.new("Frame")
+	main.Size = UDim2.new(0, 300, 0, 400)
+	main.Position = UDim2.new(0.5, -150, 0.5, -200)
+	main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	main.BorderSizePixel = 0
+	main.Parent = gui
 
-	local TopBar = Instance.new("TextLabel")
-	TopBar.Size = UDim2.new(1, 0, 0, 30)
-	TopBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-	TopBar.Text = title or "ZyroX Hub"
-	TopBar.TextColor3 = Color3.new(1,1,1)
-	TopBar.TextSize = 18
-	TopBar.Font = Enum.Font.SourceSansBold
-	TopBar.Parent = Main
+	local header = Instance.new("TextLabel")
+	header.Size = UDim2.new(1, 0, 0, 30)
+	header.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+	header.Text = title or "ZyroX Hub"
+	header.TextColor3 = Color3.new(1,1,1)
+	header.TextSize = 18
+	header.Font = Enum.Font.SourceSansBold
+	header.Parent = main
 
-	local CloseBtn = Instance.new("TextButton")
-	CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-	CloseBtn.Position = UDim2.new(1, -30, 0, 0)
-	CloseBtn.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
-	CloseBtn.Text = "X"
-	CloseBtn.TextColor3 = Color3.new(1,1,1)
-	CloseBtn.TextSize = 18
-	CloseBtn.Font = Enum.Font.SourceSansBold
-	CloseBtn.Parent = TopBar
+	local close = Instance.new("TextButton")
+	close.Size = UDim2.new(0, 30, 0, 30)
+	close.Position = UDim2.new(1, -30, 0, 0)
+	close.BackgroundColor3 = Color3.fromRGB(60, 0, 0)
+	close.Text = "X"
+	close.TextColor3 = Color3.new(1,1,1)
+	close.TextSize = 18
+	close.Font = Enum.Font.SourceSansBold
+	close.Parent = header
 
-	CloseBtn.MouseButton1Click:Connect(function()
-		ScreenGui:Destroy()
+	close.MouseButton1Click:Connect(function()
+		gui:Destroy()
 	end)
 
-	local Content = Instance.new("Frame")
-	Content.Size = UDim2.new(1, 0, 1, -30)
-	Content.Position = UDim2.new(0, 0, 0, 30)
-	Content.BackgroundTransparency = 1
-	Content.Parent = Main
+	local content = Instance.new("Frame")
+	content.Size = UDim2.new(1, 0, 1, -30)
+	content.Position = UDim2.new(0, 0, 0, 30)
+	content.BackgroundTransparency = 1
+	content.Parent = main
 
-	local UIList = Instance.new("UIListLayout", Content)
-	UIList.Padding = UDim.new(0, 5)
+	local layout = Instance.new("UIListLayout", content)
+	layout.Padding = UDim.new(0, 5)
 
-	local Window = {}
+	local window = {}
 
-	function Window:AddToggle(text, default, callback)
+	function window:AddButton(text, callback)
+		local button = Instance.new("TextButton")
+		button.Size = UDim2.new(1, -10, 0, 30)
+		button.Position = UDim2.new(0, 5, 0, 0)
+		button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+		button.TextColor3 = Color3.new(1, 1, 1)
+		button.TextSize = 16
+		button.Font = Enum.Font.SourceSansBold
+		button.BorderSizePixel = 0
+		button.Text = text
+		button.Parent = content
+		button.MouseButton1Click:Connect(function()
+			if callback then callback() end
+		end)
+	end
+
+	function window:AddToggle(text)
 		local toggle = Instance.new("TextButton")
 		toggle.Size = UDim2.new(1, -10, 0, 30)
 		toggle.Position = UDim2.new(0, 5, 0, 0)
@@ -54,24 +70,22 @@ function ZyroX:Create(title)
 		toggle.TextSize = 16
 		toggle.Font = Enum.Font.SourceSansBold
 		toggle.BorderSizePixel = 0
-		toggle.TextXAlignment = Enum.TextXAlignment.Left
-		toggle.Parent = Content
+		toggle.Text = text
+		toggle.Parent = content
 
-		local state = default or false
-		local function update()
-			toggle.Text = text .. (state and " [ON]" or " [OFF]")
-		end
-
-		update()
+		local state = false
 
 		toggle.MouseButton1Click:Connect(function()
 			state = not state
-			update()
-			if callback then callback(state) end
+			if state then
+				toggle.BackgroundColor3 = Color3.fromRGB(0, 120, 255)
+			else
+				toggle.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+			end
 		end)
 	end
 
-	return Window
+	return window
 end
 
 return ZyroX
