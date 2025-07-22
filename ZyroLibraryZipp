@@ -89,29 +89,40 @@ end)
         end)
     end
     
-    function window:AddToggle(text, default, callback)
-      local toggle = Instance.new("TextButton")
-      toggle.Name = "Toggle"
-      toggle.Size = UDim2.new(1, -10, 0, 30)
-      toggle.Position = UDim2.new(0, 5, 0, 0)
-       toggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-      toggle.Text = text .. " [OFF]"
-      toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-      toggle.Font = Enum.Font.SourceSansBold
-      toggle.TextSize = 16
-      toggle.BorderSizePixel = 0
-      toggle.Parent = content
+function window:MakeTab(title)
+	local tabFrame = Instance.new("Frame")
+	tabFrame.Name = title or "Aba"
+	tabFrame.Size = UDim2.new(1, 0, 1, 0)
+	tabFrame.BackgroundTransparency = 1
+	tabFrame.Parent = content -- ou onde você quiser
 
-      local state = default or false
-      if state then toggle.Text = text .. " [ON]" end
+	local aba = {}
 
-      toggle.MouseButton1Click:Connect(function()
-          state = not state
-          toggle.Text = text .. (state and " [ON]" or " [OFF]")
-          if callback then callback(state) end
-      end)
-    end
+	function aba:AddToggle(text, default, callback)
+		local toggle = Instance.new("TextButton")
+		toggle.Name = "Toggle"
+		toggle.Size = UDim2.new(1, -10, 0, 30)
+		toggle.Position = UDim2.new(0, 5, 0, 0)
+		toggle.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+		toggle.Text = text .. " [OFF]"
+		toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+		toggle.Font = Enum.Font.SourceSansBold
+		toggle.TextSize = 16
+		toggle.BorderSizePixel = 0
+		toggle.Parent = tabFrame
 
+		local state = default or false
+		if state then toggle.Text = text .. " [ON]" end
+
+		toggle.MouseButton1Click:Connect(function()
+			state = not state
+			toggle.Text = text .. (state and " [ON]" or " [OFF]")
+			if callback then callback(state) end
+		end)
+	end
+
+	return aba
+end
     function windowObject:AddNotification(text, duration)
         local Notification = Instance.new("TextLabel")
         Notification.Size = UDim2.new(0, 300, 0, 30)
