@@ -1,0 +1,97 @@
+-- ZyroX UI Library
+
+local ZyroX = {}
+ZyroX.Theme = {
+    Background = Color3.fromRGB(20, 20, 20),
+    TopBar = Color3.fromRGB(30, 30, 30),
+    Title = Color3.fromRGB(255, 255, 255),
+    Button = Color3.fromRGB(40, 40, 40),
+    ButtonText = Color3.fromRGB(255, 255, 255),
+    Notification = Color3.fromRGB(60, 60, 60),
+    NotificationText = Color3.fromRGB(255, 255, 255)
+}
+
+function ZyroX:CreateWindow(title)
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "ZyroX_UI"
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.Parent = game:GetService("CoreGui")
+
+    local Main = Instance.new("Frame")
+    Main.Size = UDim2.new(0, 400, 0, 300)
+    Main.Position = UDim2.new(0.5, -200, 0.5, -150)
+    Main.BackgroundColor3 = self.Theme.Background
+    Main.BorderSizePixel = 0
+    Main.Active = true
+    Main.Draggable = true
+    Main.Parent = ScreenGui
+
+    local TopBar = Instance.new("Frame")
+    TopBar.Size = UDim2.new(1, 0, 0, 30)
+    TopBar.BackgroundColor3 = self.Theme.TopBar
+    TopBar.BorderSizePixel = 0
+    TopBar.Parent = Main
+
+    local Title = Instance.new("TextLabel")
+    Title.Size = UDim2.new(1, 0, 1, 0)
+    Title.BackgroundTransparency = 1
+    Title.Text = title or "ZyroX"
+    Title.TextColor3 = self.Theme.Title
+    Title.Font = Enum.Font.GothamSemibold
+    Title.TextSize = 16
+    Title.Parent = TopBar
+
+    local Container = Instance.new("Frame")
+    Container.Size = UDim2.new(1, 0, 1, -30)
+    Container.Position = UDim2.new(0, 0, 0, 30)
+    Container.BackgroundTransparency = 1
+    Container.Parent = Main
+
+    local UILayout = Instance.new("UIListLayout")
+    UILayout.Padding = UDim.new(0, 8)
+    UILayout.FillDirection = Enum.FillDirection.Vertical
+    UILayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+    UILayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UILayout.Parent = Container
+
+    local windowObject = {}
+
+    function windowObject:AddButton(text, callback)
+        local Button = Instance.new("TextButton")
+        Button.Size = UDim2.new(0, 200, 0, 40)
+        Button.BackgroundColor3 = ZyroX.Theme.Button
+        Button.TextColor3 = ZyroX.Theme.ButtonText
+        Button.Font = Enum.Font.Gotham
+        Button.TextSize = 14
+        Button.Text = text or "Button"
+        Button.BorderSizePixel = 0
+        Button.Parent = Container
+
+        Button.MouseButton1Click:Connect(function()
+            if callback then
+                pcall(callback)
+            end
+        end)
+    end
+
+    function windowObject:AddNotification(text, duration)
+        local Notification = Instance.new("TextLabel")
+        Notification.Size = UDim2.new(0, 300, 0, 30)
+        Notification.BackgroundColor3 = ZyroX.Theme.Notification
+        Notification.TextColor3 = ZyroX.Theme.NotificationText
+        Notification.Font = Enum.Font.Gotham
+        Notification.TextSize = 14
+        Notification.Text = text or "Notification"
+        Notification.BorderSizePixel = 0
+        Notification.Position = UDim2.new(1, -310, 0, 10)
+        Notification.Parent = ScreenGui
+
+        task.delay(duration or 3, function()
+            Notification:Destroy()
+        end)
+    end
+
+    return windowObject
+end
+
+return ZyroX
